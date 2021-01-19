@@ -1,41 +1,33 @@
-## 使用背景
+## 请仔细阅读[WIKI](https://github.com/EvineDeng/jd-base/wiki)和各文件注释，90%的问题都能找到答案
 
-- 本shell脚本用来运行[lxk0301/jd_scripts](https://github.com/lxk0301/jd_scripts)中的js脚本，解放双手，自动玩耍京东的各种游戏，主要有：各种签到、东东农场、种豆得豆、天天加速、摇钱树、宠汪汪、东东萌宠、东东超市，获取各种小羊毛。
+## 如有帮助到你，请点亮Star
 
-- 本脚本只是给lxk0301大佬的js脚本套了层壳，建议大家多多关注lxk0301大佬的仓库。
+## 如有二次使用，请注明来源
 
-- **如果是对js脚本有使用的上的问题请前往 [lxk0301/jd_scripts](https://github.com/lxk0301/jd_scripts) 提出，这里只解决shell脚本的问题。**
+本脚本是[https://github.com/LXK9301/jd_scripts](https://github.com/LXK9301/jd_scripts)的shell套壳工具，适用于以下系统：
 
-## 教程
+- ArmBian/Debian/Ubuntu/OpenMediaVault/CentOS/Fedora/RHEL等Linux系统
 
-- [Armbian/OpenWrt/Debian/OpenMediaVault/Ubuntu/CentOS/Fedora/RedHat等Linux系统](Readme/Computer.md)
+- OpenWRT
 
-- [Android](Readme/Android.md)
+- Android
 
-- [MacOS](Readme/MacOS.md)
+- MacOS
 
-- [Docker](Readme/Docker.md)
+- Docker
 
-## TO DO LIST
+## 说明
 
-暂无
+1. 宠汪汪赛跑助力先让用户提供的各个账号之间相互助力，助力完成你提供的所有账号以后，再给我和lxk0301大佬助力，每个账号助力后可得30g狗粮。
+
+2. 将部分临时活动修改为了我的邀请码，已取得lxk0301大佬的同意。
 
 ## 更新日志
 
-    只记录大的更新，小修小改不记录。
+> 只记录大的更新，小修小改不记录。
 
-- **2020-11-10：lxk0301/scripts 已被封，新的库为 [lxk0301/jd_scripts](https://github.com/lxk0301/jd_scripts)，所有在这时间之前的老用户请按 [#26](https://github.com/EvineDeng/jd-base/issues/26) 重新配置一下！！**
+2021-01-15，每天定时任务中git_pull.sh只执行2次；每天12:00前运行git_pull.sh时随机生成当天下午执行git_pull.sh的任务时间，生成的时间范围：13:00-20:59；每天12:00后运行git_pull.sh时随机生成第二天上行执行git_pull.sh的任务时间，生成的时间范围：7:00-11:59；不影响手动执行，手动执行会刷新下一次git_pull.sh的执行时间。如果本机上安装了pm2，则挂机程序以pm2启动，否则以nohup启动。
 
-- 2020-11-11：已构建多平台docker镜像，包括：linux/amd64, linux/arm64, linux/ppc64le, linux/s390x, linux/arm/v7, linux/arm/v6。树莓派、N1小钢炮等arm设备均可使用。
-
-- 2020-11-13：重新用Perl语言改写sed命令，脚本已经可以兼容Android、MacOS。
-
-- 2020-11-15：为保持跨平台兼容性，把`Docker`的`shell`也更换为`bash`，Docker用户需要删除原来的镜像重新部署方可正常使用。
-    ```
-    docker stop jd
-    docker rm jd 
-    docker rmi evinedeng/jd-base
-    ```
-    无需重新配置，直接按原来的`docker run`命令重新部署即可恢复原有内容。
+## Star趋势
 
 [![Stargazers over time](https://starchart.cc/EvineDeng/jd-base.svg)](https://starchart.cc/EvineDeng/jd-base)
