@@ -1,7 +1,7 @@
 FROM node:lts-alpine
 LABEL maintainer="Evine Deng <evinedeng@foxmail.com>"
 ARG JD_BASE_URL=https://github.com/Oscar1011/jd-base.git
-ARG JD_BASE_BRANCH=master
+ARG JD_BASE_BRANCH=main
 ARG NODE_SCRIPTS_URL=https://github.com/ZhiYi-N/Private-Script.git
 ARG NODE_SCRIPTS_BRANCH=master
 ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
