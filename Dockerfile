@@ -33,8 +33,9 @@ RUN apk update -f \
     && git clone -b ${NODE_SCRIPTS_BRANCH} ${NODE_SCRIPTS_URL} ${JD_DIR}/scripts \
     && ln -sf ${JD_DIR}/jd.sh /usr/local/bin/jd \
     && ln -sf ${JD_DIR}/git_pull.sh /usr/local/bin/git_pull \
-    && ln -sf ${JD_DIR}/rm_log.sh /usr/local/bin/rm_log \
-    && cp -f ${JD_DIR}/docker/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh \
+    && ln -sf ${JD_DIR}/rm_log.sh /usr/local/bin/rm_log
+
+RUN cp -f ${JD_DIR}/docker/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh \
     && chmod 777 /usr/local/bin/docker-entrypoint.sh \
     && rm -rf /root/.npm
 WORKDIR ${JD_DIR}
