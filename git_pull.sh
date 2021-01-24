@@ -21,12 +21,8 @@ ContentVersion=${ShellDir}/version
 isTermux=${ANDROID_RUNTIME_ROOT}${ANDROID_ROOT}
 WhichDep=$(grep "/jd-base" "${ShellDir}/.git/config")
 ShellURL=https://github.com/Oscar1011/jd-base.git
+ScriptsURL=https://github.com/ZhiYi-N/Private-Script.git
 
-if [[ ${WhichDep} == *github* ]]; then
-  ScriptsURL=https://github.com/LXK9301/jd_scripts
-else
-  ScriptsURL=https://gitee.com/lxk0301/jd_scripts
-fi
 
 ## 更新shell脚本
 function Git_PullShell {
