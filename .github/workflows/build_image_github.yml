@@ -12,7 +12,7 @@ jobs:
       - name: Build and publish image
         uses: ilteoood/docker_buildx@master
         with:
-          publish: true
+          publish: false
           imageName: oscar1011/nodebase
           dockerFile: docker/github/Dockerfile
           platform: linux/amd64,linux/arm64,linux/arm/v7
