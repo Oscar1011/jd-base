@@ -25,7 +25,7 @@ var confBakDir = path.join(rootPath,'config/bak/');
 // auth.json 文件目录
 var authConfigFile = path.join(rootPath,'config/auth.json');
 // Share Code 文件目录
-var shareCodeDir = path.join(rootPath,'log/jd_get_share_code/');
+// var shareCodeDir = path.join(rootPath,'log/jd_get_share_code/');
 // diy.sh 文件目录
 var diyFile = path.join(rootPath,'config/diy.sh');
 
@@ -377,10 +377,10 @@ app.get('/api/config/:key', function (request, response) {
                 case 'crontab':
                     content = getFileContentByName(crontabFile);
                     break;
-                case 'shareCode':
-                    let shareCodeFile = getLastModifyFilePath(shareCodeDir);
-                    content = getFileContentByName(shareCodeFile);
-                    break;
+                // case 'shareCode':
+                //     let shareCodeFile = getLastModifyFilePath(shareCodeDir);
+                //     content = getFileContentByName(shareCodeFile);
+                //     break;
                 case 'diy':
                     content = getFileContentByName(diyFile);
                     break;
@@ -424,14 +424,14 @@ app.get('/diff', function (request, response) {
 /**
  * Share Code 页面
  */
-app.get('/shareCode', function (request, response) {
-    if (request.session.loggedin) {
-        response.sendFile(path.join(__dirname + '/public/shareCode.html'));
-    } else {
-        response.redirect('./');
-    }
-
-});
+// app.get('/shareCode', function (request, response) {
+//     if (request.session.loggedin) {
+//         response.sendFile(path.join(__dirname + '/public/shareCode.html'));
+//     } else {
+//         response.redirect('./');
+//     }
+//
+// });
 
 /**
  * crontab 配置页面
@@ -535,6 +535,6 @@ app.post('/api/save', function (request, response) {
 
 checkConfigFile()
 
-app.listen(5678, () => {
-    console.log('应用正在监听 5678 端口!');
+app.listen(9067, () => {
+    console.log('应用正在监听 9067 端口!');
 });
