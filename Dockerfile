@@ -1,9 +1,9 @@
 FROM node:lts-alpine
 LABEL maintainer="Evine Deng <evinedeng@foxmail.com>"
 ARG JD_BASE_URL=https://github.com/Oscar1011/jd-base.git
-ARG JD_BASE_BRANCH=main
-ARG NODE_SCRIPTS_URL=https://github.com/ZhiYi-N/Private-Script.git
-ARG NODE_SCRIPTS_BRANCH=master
+ARG JD_BASE_BRANCH=master
+ARG JD_SCRIPTS_URL=https://gitee.com/lxk0301/jd_scripts.git
+ARG JD_SCRIPTS_BRANCH=master
 ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     LANG=zh_CN.UTF-8 \
     SHELL=/bin/bash \
@@ -30,12 +30,15 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
     && git clone -b ${JD_BASE_BRANCH} ${JD_BASE_URL} ${JD_DIR} \
     && cd ${JD_DIR}/panel \
     && npm install \
+    && git clone -b ${JD_SCRIPTS_BRANCH} ${JD_SCRIPTS_URL} ${JD_DIR}/scripts \
+    && cd ${JD_DIR}/scripts \
+    && npm install \
     && npm install -g pm2 \
-    && git clone -b ${NODE_SCRIPTS_BRANCH} ${NODE_SCRIPTS_URL} ${JD_DIR}/scripts \
     && ln -sf ${JD_DIR}/jd.sh /usr/local/bin/jd \
     && ln -sf ${JD_DIR}/git_pull.sh /usr/local/bin/git_pull \
     && ln -sf ${JD_DIR}/rm_log.sh /usr/local/bin/rm_log \
-    && cp -f ${JD_DIR}/docker/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh \
+    && ln -sf ${JD_DIR}/export_sharecodes.sh /usr/local/bin/export_sharecodes \
+    && cp -f ${JD_DIR}/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh \
     && chmod 777 /usr/local/bin/docker-entrypoint.sh \
     && rm -rf /root/.npm
 WORKDIR ${JD_DIR}

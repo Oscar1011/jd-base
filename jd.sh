@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 
-## Author: Evine Deng
-## Source: https://github.com/EvineDeng/jd-base
-## Modified： 2021-01-22
-## Version： v3.6.16
-
 ## 路径
 ShellDir=${JD_DIR:-$(cd $(dirname $0); pwd)}
 [ ${JD_DIR} ] && HelpJd=jd || HelpJd=jd.sh
@@ -13,7 +8,7 @@ ConfigDir=${ShellDir}/config
 FileConf=${ConfigDir}/config.sh
 FileConfSample=${ShellDir}/sample/config.sh.sample
 LogDir=${ShellDir}/log
-ListScripts=$(ls ${ScriptsDir} | grep -E "j[drx]_\w+\.js" | perl -pe "s|\.js||")
+ListScripts=($(cd ${ScriptsDir}; ls *.js | grep -E "j[drx]_"))
 ListCron=${ConfigDir}/crontab.list
 
 ## 导入config.sh
@@ -40,21 +35,22 @@ function Detect_Cron {
 
 ## 用户数量UserSum
 function Count_UserSum {
-  i=1
-  while [ $i -le 1000 ]; do
+  for ((i=1; i<=1000; i++)); do
     Tmp=Cookie$i
     CookieTmp=${!Tmp}
     [[ ${CookieTmp} ]] && UserSum=$i || break
-    let i++
   done
 }
 
 ## 组合Cookie和互助码子程序
 function Combin_Sub {
   CombinAll=""
-  i=1
-  while [ $i -le ${UserSum} ]
-  do
+  for ((i=1; i<=${UserSum}; i++)); do
+    for num in ${TempBlockCookie}; do
+      if [[ $i -eq $num ]]; then
+        continue 2
+      fi
+    done
     Tmp1=$1$i
     Tmp2=${!Tmp1}
     case $# in
@@ -85,17 +81,38 @@ function Combin_Sub {
         esac
         ;;
     esac
-    let i++
   done
   echo ${CombinAll} | perl -pe "{s|^&||; s|^@+||; s|&@|&|g; s|@+|@|g}"
 }
 
-## 组合Cookie、Token与互助码，用户自己的放在前面，我的放在后面
+## 组合Cookie、Token与互助码
 function Combin_All {
-  echo ""
-  #just be a sample
-  #export JD_COOKIE=$(Combin_Sub Cookie)
-  #export BOOKSHOP_SHARECODES=$(Combin_Sub ForOtherBookShop "aea9a9e0bc9e4f49b0515020e7bbaa90@4e012467d3da47268df4ef821a9f0662@8c3cefd0dcbb4b83a32f4dffde72fa26")
+  export JD_COOKIE=$(Combin_Sub Cookie)
+  export JXNCTOKENS=$(Combin_Sub TokenJxnc)
+  #东东农场(jd_fruit.js)
+  export FRUITSHARECODES=$(Combin_Sub ForOtherFruit)
+  #东东萌宠(jd_pet.js)
+  export PETSHARECODES=$(Combin_Sub ForOtherPet)
+  #种豆得豆(jd_plantBean.js)
+  export PLANT_BEAN_SHARECODES=$(Combin_Sub ForOtherBean)
+  #京喜工厂(jd_dreamFactory.js)
+  export DREAM_FACTORY_SHARE_CODES=$(Combin_Sub ForOtherDreamFactory)
+  #东东工厂(jd_jdfactory.js)
+  export DDFACTORY_SHARECODES=$(Combin_Sub ForOtherJdFactory)
+  #京东赚赚(jd_jdzz.js)
+  export JDZZ_SHARECODES=$(Combin_Sub ForOtherJdzz)
+  #crazyJoy(jd_crazy_joy.js)
+  export JDJOY_SHARECODES=$(Combin_Sub ForOtherJoy)
+  #惊喜农场(jd_jxnc.js)
+  export JXNC_SHARECODES=$(Combin_Sub ForOtherJxnc)
+  #口袋书店(jd_bookshop.js)
+  export BOOKSHOP_SHARECODES=$(Combin_Sub ForOtherBookShop)
+  #签到领现金(jd_cash.js)
+  export JD_CASH_SHARECODES=$(Combin_Sub ForOtherCash)
+  #闪购盲盒(jd_sgmh.js)
+  export JDSGMH_SHARECODES=$(Combin_Sub ForOtherSgmh)
+  #环球挑战赛(jd_global.js)-活动时间：2021-02-02 至 2021-02-22
+  export JDGLOBAL_SHARECODES=$(Combin_Sub ForOtherGLOBAL)
 }
 
 ## 转换JD_BEAN_SIGN_STOP_NOTIFY或JD_BEAN_SIGN_NOTIFY_SIMPLE
@@ -123,34 +140,32 @@ function Set_Env {
   Trans_UN_SUBSCRIBES
 }
 
-## 随机延迟子程序
-function Random_DelaySub {
-  CurDelay=$((${RANDOM} % ${RandomDelay} + 1))
-  echo -e "\n命令未添加 \"now\"，随机延迟 ${CurDelay} 秒后再执行任务，如需立即终止，请按 CTRL+C...\n"
-  sleep ${CurDelay}
-}
-
-## 随机延迟判断
+## 随机延迟
 function Random_Delay {
-  if [ -n "${RandomDelay}" ] && [ ${RandomDelay} -gt 0 ]; then
-    CurMin=$(date "+%M")
-    if [ ${CurMin} -gt 2 ] && [ ${CurMin} -lt 30 ]; then
-      Random_DelaySub
-    elif [ ${CurMin} -gt 31 ] && [ ${CurMin} -lt 59 ]; then
-      Random_DelaySub
+  if [[ -n ${RandomDelay} ]] && [[ ${RandomDelay} -gt 0 ]]; then
+    CurMin=$(date "+%-M")
+    if [[ ${CurMin} -gt 2 && ${CurMin} -lt 30 ]] || [[ ${CurMin} -gt 31 && ${CurMin} -lt 59 ]]; then
+      CurDelay=$((${RANDOM} % ${RandomDelay} + 1))
+      echo -e "\n命令未添加 \"now\"，随机延迟 ${CurDelay} 秒后再执行任务，如需立即终止，请按 CTRL+C...\n"
+      sleep ${CurDelay}
     fi
   fi
 }
 
 ## 使用说明
 function Help {
-  echo -e "本脚本的用法为：\n"
-  echo -e "1. bash ${HelpJd} xxx      # 如果设置了随机延迟并且当时时间不在0-2、30-31、59分内，将随机延迟一定秒数\n"
-  echo -e "2. bash ${HelpJd} xxx now  # 无论是否设置了随机延迟，均立即运行\n"
-  echo -e "3. bash ${HelpJd} hangup   # 重启挂机程序\n"
-  echo -e "4. bash ${HelpJd} resetpwd # 重置控制面板用户名和密码\n"
-  echo -e "针对用法1、用法2中的\"xxx\"，无需输入后缀\".js\"，另外，如果前缀是\"jd_\"的话前缀也可以省略...\n"
-  echo -e "当前有以下脚本可以运行（包括尚未被lxk0301大佬放进docker下crontab的脚本，但不含自定义脚本）：\n${ListScripts}\n"
+  echo -e "本脚本的用法为："
+  echo -e "1. bash ${HelpJd} xxx      # 如果设置了随机延迟并且当时时间不在0-2、30-31、59分内，将随机延迟一定秒数"
+  echo -e "2. bash ${HelpJd} xxx now  # 无论是否设置了随机延迟，均立即运行"
+  echo -e "3. bash ${HelpJd} hangup   # 重启挂机程序"
+  echo -e "4. bash ${HelpJd} resetpwd # 重置控制面板用户名和密码"
+  echo -e "\n针对用法1、用法2中的\"xxx\"，无需输入后缀\".js\"，另外，如果前缀是\"jd_\"的话前缀也可以省略。"
+  echo -e "当前有以下脚本可以运行（仅列出以jd_、jr_、jx_开头的脚本）："
+  cd ${ScriptsDir}
+  for ((i=0; i<${#ListScripts[*]}; i++)); do
+    Name=$(grep "new Env" ${ListScripts[i]} | awk -F "'|\"" '{print $2}')
+    echo -e "$(($i + 1)).${Name}：${ListScripts[i]}"
+  done
 }
 
 ## nohup
@@ -182,7 +197,7 @@ function Run_Pm2 {
 
 ## 运行挂机脚本
 function Run_HangUp {
-  Import_Conf && Detect_Cron && Set_Env
+  Import_Conf $1 && Detect_Cron && Set_Env
   HangUpJs="jd_crazy_joy_coin"
   cd ${ScriptsDir}
   if type pm2 >/dev/null 2>&1; then
@@ -200,7 +215,7 @@ function Reset_Pwd {
 
 ## 运行京东脚本
 function Run_Normal {
-  Import_Conf && Detect_Cron && Set_Env
+  Import_Conf $1 && Detect_Cron && Set_Env
   
   FileNameTmp1=$(echo $1 | perl -pe "s|\.js||")
   FileNameTmp2=$(echo $1 | perl -pe "{s|jd_||; s|\.js||; s|^|jd_|}")
