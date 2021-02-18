@@ -5,6 +5,7 @@ ShellDir=${JD_DIR:-$(cd $(dirname $0); pwd)}
 [ ${JD_DIR} ] && HelpJd=jd || HelpJd=jd.sh
 ScriptsDir=${ShellDir}/scripts
 ConfigDir=${ShellDir}/config
+OtherScriptsDir=${ShellDir}/alljs
 FileConf=${ConfigDir}/config.sh
 FileConfSample=${ShellDir}/sample/config.sh.sample
 LogDir=${ShellDir}/log
@@ -216,7 +217,7 @@ function Run_Normal {
   
   FileNameTmp1=$(echo $1 | perl -pe "s|\.js||")
   FileNameTmp2=$(echo $1 | perl -pe "{s|jd_||; s|\.js||; s|^|jd_|}")
-  SeekDir="${ScriptsDir} ${ScriptsDir}/backUp ${ConfigDir}"
+  SeekDir="${ScriptsDir} ${ScriptsDir}/backUp ${ConfigDir} ${OtherScriptsDir}"
   FileName=""
   WhichDir=""
 
