@@ -16,10 +16,6 @@ function Import_Conf {
   if [ -f ${FileConf} ]
   then
     . ${FileConf}
-    if [ -z "${Cookie1}" ]; then
-      echo -e "请先在config.sh中配置好Cookie...\n"
-      exit 1
-    fi
   else
     echo -e "配置文件 ${FileConf} 不存在，请先按教程配置好该文件...\n"
     exit 1
