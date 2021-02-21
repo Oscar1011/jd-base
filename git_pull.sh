@@ -21,7 +21,7 @@ ContentNewTask=${ShellDir}/new_task
 ContentDropTask=${ShellDir}/drop_task
 SendCount=${ShellDir}/send_count
 isTermux=${ANDROID_RUNTIME_ROOT}${ANDROID_ROOT}
-ScriptsURL=https://gitee.com/lxk0301/jd_scripts.git
+ScriptsURL=git@gitee.com:lxk0301/jd_scripts.git
 ScriptsBranch=master
 ShellURL=https://github.com/Oscar1011/jd-base.git
 
@@ -63,7 +63,12 @@ function Git_PullShell {
 
 ## 克隆scripts
 function Git_CloneScripts {
-  git clone -b ${ScriptsBranch} ${ScriptsURL} ${ScriptsDir}
+  #git clone -b ${ScriptsBranch} ${ScriptsURL} ${ScriptsDir}
+  cd ${ScriptsDir}
+  git remote set-url origin ${ScriptsURL}
+  git reset --hard
+  echo "git pull拉取最新代码..."
+  git -C /scripts pull --rebase
   ExitStatusScripts=$?
   echo
 }
