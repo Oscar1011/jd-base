@@ -25,12 +25,6 @@ ScriptsURL=git@gitee.com:lxk0301/jd_scripts.git
 ScriptsBranch=master
 ShellURL=https://github.com/Oscar1011/jd-base.git
 
-if [ $JD_SCRIPTS_URL ]; then
-  ScriptsURL=$JD_SCRIPTS_URL
-fi
-if [ $JD_SCRIPTS_BRANCH ]; then
-  ScriptsBranch=$JD_SCRIPTS_BRANCH
-fi
 
 
 ## 更新crontab，gitee服务器同一时间限制5个链接，因此每个人更新代码必须错开时间，每次执行git_pull随机生成。
@@ -63,12 +57,7 @@ function Git_PullShell {
 
 ## 克隆scripts
 function Git_CloneScripts {
-  #git clone -b ${ScriptsBranch} ${ScriptsURL} ${ScriptsDir}
-  cd ${ScriptsDir}
-  git remote set-url origin ${ScriptsURL}
-  git reset --hard
-  echo "git pull拉取最新代码..."
-  git -C /scripts pull --rebase
+  git clone -b ${ScriptsBranch} ${ScriptsURL} ${ScriptsDir}
   ExitStatusScripts=$?
   echo
 }
