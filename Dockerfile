@@ -49,6 +49,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
     && ln -sf ${JD_DIR}/git_pull.sh /usr/local/bin/git_pull \
     && ln -sf ${JD_DIR}/rm_log.sh /usr/local/bin/rm_log \
     && ln -sf ${JD_DIR}/export_sharecodes.sh /usr/local/bin/export_sharecodes \
+    && ln -sf ${JD_DIR}/git_diy.sh /usr/local/bin/git_diy \
     && cp -f ${JD_DIR}/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh \
     && chmod 777 /usr/local/bin/docker-entrypoint.sh \
     && rm -rf /root/.npm

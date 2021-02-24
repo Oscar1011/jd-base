@@ -35,6 +35,13 @@ async function update() {
         await notify.sendNotify('配置文件更新通知', versionContent);
       }
     }
+
+    if (fs.existsSync('message')) {
+      const versionContent = await fs.readFileSync('./message', 'utf8');
+      if (versionContent) {
+        await notify.sendNotify('JD-BASE消息通知', versionContent);
+      }
+    }
   } catch (err) {
     console.error(err)
   }
