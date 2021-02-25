@@ -1,12 +1,5 @@
 #!/usr/bin/env bash
-#需要docker环境
-#copy本文件到scripts映射的文件夹
-#新建alljs文件夹,并映射到容器目录/jd/alljs
-#需要同步的仓库,比如i-chenzhe,则进入diyscripts 运行 git clone https://github.com/i-chenzhe/qx.git i-chenzhe 
-#/bin/bash /jd/git_diy.sh https://github.com/i-chenzhe/qx.git  master i-chenzhe >/dev/null  copy到diy.sh最后一行即可
-#操作之前请备份,信息丢失,概不负责.
-#操作之前请备份,信息丢失,概不负责.
-#操作之前请备份,信息丢失,概不负责.
+
 ShellDir=/jd
 
 source ${ShellDir}/notify.sh
