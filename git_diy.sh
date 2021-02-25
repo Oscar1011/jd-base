@@ -16,6 +16,7 @@ fi
 cd ${diyscripts}
 git fetch --all
 gitpullstatus=$?
+git reset --hard origin/${git_branch}
 
 
 rand(){
@@ -24,7 +25,13 @@ rand(){
     num=$(cat /proc/sys/kernel/random/uuid | cksum | awk -F ' ' '{print $1}')
     echo $(($num%$max+$min))
 }
-
+function updatefile {
+  cd ${diyscripts}
+  for js in `ls *.js`;
+    do
+     cp $js /jd/scripts/${author}_$js
+  done
+}
 function addnewcron {
   addname=""
   cd ${diyscripts}
@@ -64,6 +71,7 @@ function delcron {
 
 if [[ ${gitpullstatus} -eq 0 ]]
 then
+  updatefile
   addnewcron
   delcron
 fi
