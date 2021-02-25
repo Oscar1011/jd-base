@@ -65,7 +65,8 @@ function Git_CloneScripts {
 ## 更新scripts
 function Git_PullScripts {
   cd ${ScriptsDir}
-  git fetch --all
+  #git fetch --all
+  git pull
   ExitStatusScripts=$?
   git reset --hard origin/master
   echo
