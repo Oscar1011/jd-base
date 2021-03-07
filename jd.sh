@@ -9,7 +9,7 @@ OtherScriptsDir=""
 FileConf=${ConfigDir}/config.sh
 FileConfSample=${ShellDir}/sample/config.sh.sample
 LogDir=${ShellDir}/log
-ListScripts=($(cd ${ScriptsDir}; ls *.js | grep -E "j[drx]_"))
+ListScripts=($(cd ${ScriptsDir}; ls *.js | grep -E "j[drx]_|my_"))
 ListCron=${ConfigDir}/crontab.list
 
 ## 导入config.sh
@@ -158,7 +158,7 @@ function Help {
   echo -e "3. bash ${HelpJd} hangup   # 重启挂机程序"
   echo -e "4. bash ${HelpJd} resetpwd # 重置控制面板用户名和密码"
   echo -e "\n针对用法1、用法2中的\"xxx\"，无需输入后缀\".js\"，另外，如果前缀是\"jd_\"的话前缀也可以省略。"
-  echo -e "当前有以下脚本可以运行（仅列出以jd_、jr_、jx_开头的脚本）："
+  echo -e "当前有以下脚本可以运行（仅列出以jd_、jr_、jx_、my_开头的脚本）："
   cd ${ScriptsDir}
   for ((i=0; i<${#ListScripts[*]}; i++)); do
     Name=$(grep "new Env" ${ListScripts[i]} | awk -F "'|\"" '{print $2}')
