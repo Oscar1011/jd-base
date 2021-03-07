@@ -33,6 +33,8 @@ var diyFile = path.join(rootPath, 'config/diy.sh');
 var logPath = path.join(rootPath, 'log/');
 // 脚本目录
 var ScriptsPath = path.join(rootPath, 'scripts/');
+// 脚本目录
+var AlljsPath = path.join(rootPath, 'alljs/');
 
 var authError = "错误的用户名密码，请重试";
 var loginFaild = "请先登录!";
@@ -244,6 +246,13 @@ function saveNewConf(file, content) {
             break;
         default:
             break;
+    }
+}
+
+function saveScripts(file, content) {
+    // bakConfFile(file);
+    if (fs.existsSync(file)) {
+        fs.writeFileSync(file, content);
     }
 }
 
@@ -666,6 +675,104 @@ app.get('/api/logs/:dir/:file', function (request, response) {
 
 });
 
+/**
+ * 查看脚本 页面
+ */
+app.get('/viewMyScripts', function (request, response) {
+    if (request.session.loggedin) {
+        response.sendFile(path.join(__dirname + '/public/viewScripts.html'));
+    } else {
+        response.redirect('/');
+    }
+});
+
+/**
+ * 脚本列表
+ */
+app.get('/api/myscripts', function (request, response) {
+    if (request.session.loggedin) {
+        var fileList = fs.readdirSync(AlljsPath, 'utf-8');
+        var dirs = [];
+        var rootFiles = [];
+        var excludeRegExp = /(git)|(node_modules)|(icon)/;
+        for (var i = 0; i < fileList.length; i++) {
+            var stat = fs.lstatSync(AlljsPath + fileList[i]);
+            // 是目录，需要继续
+            if (stat.isDirectory()) {
+                var fileListTmp = fs.readdirSync(AlljsPath + '/' + fileList[i], 'utf-8');
+                fileListTmp.reverse();
+
+                if (excludeRegExp.test(fileList[i])) {
+                    continue;
+                }
+
+                var dirMap = {
+                    dirName: fileList[i],
+                    files: fileListTmp
+                }
+                dirs.push(dirMap);
+            } else {
+                if (excludeRegExp.test(fileList[i])) {
+                    continue;
+                }
+
+                rootFiles.push(fileList[i]);
+            }
+        }
+
+        dirs.push({
+            dirName: '@',
+            files: rootFiles
+        });
+        var result = { dirs };
+        response.send(result);
+
+    } else {
+        response.redirect('/');
+    }
+
+});
+
+/**
+ * 脚本文件
+ */
+app.get('/api/myscripts/:dir/:file', function (request, response) {
+    if (request.session.loggedin) {
+        let filePath;
+        if (request.params.dir === '@') {
+            filePath = AlljsPath + request.params.file;
+        } else {
+            filePath = AlljsPath + request.params.dir + '/' + request.params.file;
+        }
+        var content = getFileContentByName(filePath);
+        response.setHeader("Content-Type", "text/plain");
+        response.send(content);
+    } else {
+        response.redirect('/');
+    }
+
+});
+/**
+ * 修改脚本文件
+ */
+app.post('/api/savemyscripts', function (request, response) {
+    if (request.session.loggedin) {
+        let postContent = request.body.content;
+        let dir = request.body.dirName;
+        let file = request.body.fileName;
+
+        if (dir === '@') {
+            postfile = path.join(AlljsPath,file);
+        } else {
+            postfile = path.join(AlljsPath,dir,file);
+        }
+        saveScripts(postfile, postContent);
+        response.send({ err: 0, title: "保存成功! ", msg: "将自动刷新页面查看修改后的 " + postfile + " 文件" });
+    } else {
+        response.send({ err: 1, title: "保存失败! ", msg: loginFaild });
+    }
+
+});
 
 /**
  * 查看脚本 页面
