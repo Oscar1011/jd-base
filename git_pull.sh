@@ -24,7 +24,7 @@ isTermux=${ANDROID_RUNTIME_ROOT}${ANDROID_ROOT}
 ScriptsURL=git@gitee.com:lxk0301/jd_scripts.git
 ScriptsBranch=master
 ShellURL=https://github.com/Oscar1011/jd-base.git
-
+ExitStatusScripts=0
 
 
 ## 更新crontab，gitee服务器同一时间限制5个链接，因此每个人更新代码必须错开时间，每次执行git_pull随机生成。
