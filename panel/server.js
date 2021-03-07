@@ -680,7 +680,7 @@ app.get('/api/logs/:dir/:file', function (request, response) {
  */
 app.get('/viewMyScripts', function (request, response) {
     if (request.session.loggedin) {
-        response.sendFile(path.join(__dirname + '/public/viewScripts.html'));
+        response.sendFile(path.join(__dirname + '/public/viewMyScripts.html'));
     } else {
         response.redirect('/');
     }
