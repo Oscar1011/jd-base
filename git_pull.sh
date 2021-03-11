@@ -114,8 +114,8 @@ function Git_PullScripts {
 
 ## 更新docker-entrypoint
 function Update_Entrypoint {
-  if [[ ${JD_DIR} ]] && [[ $(cat ${ShellDir}/docker/docker-entrypoint.sh) != $(cat /usr/local/bin/docker-entrypoint.sh) ]]; then
-    cp -f ${ShellDir}/docker/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+  if [[ ${JD_DIR} ]] && [[ $(cat ${ShellDir}/docker-entrypoint.sh) != $(cat /usr/local/bin/docker-entrypoint.sh) ]]; then
+    cp -f ${ShellDir}/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
     chmod 777 /usr/local/bin/docker-entrypoint.sh
   fi
 }
