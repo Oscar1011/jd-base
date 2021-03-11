@@ -26,11 +26,17 @@ ScriptsBranch=master
 ShellURL=https://github.com/Oscar1011/jd-base.git
 ExitStatusScripts=0
 
+## 导入配置文件
+function Import_Conf {
+  if [ -f ${FileConf} ]; then
+    . ${FileConf}
+  fi
+}
 
 ## 更新crontab，gitee服务器同一时间限制5个链接，因此每个人更新代码必须错开时间，每次执行git_pull随机生成。
 ## 每天次数随机，更新时间随机，更新秒数随机，至少6次，至多12次，大部分为8-10次，符合正态分布。
 function Update_Cron {
-  if [ -f ${ListCron} ]; then
+  if [[ $(date "+%-H") -le 2 ]] && [ -f ${ListCron} ]; then
     RanMin=$((${RANDOM} % 60))
     RanSleep=$((${RANDOM} % 56))
     RanHourArray[0]=$((${RANDOM} % 3))
@@ -43,20 +49,53 @@ function Update_Cron {
     for ((i=1; i<${#RanHourArray[*]}; i++)); do
       RanHour="${RanHour},${RanHourArray[i]}"
     done
-    perl -i -pe "s|.+(bash git_pull.+)|${RanMin} ${RanHour} \* \* \* sleep ${RanSleep} && \1|" ${ListCron}
+    perl -i -pe "s|.+(bash.+git_pull.+log.*)|${RanMin} ${RanHour} \* \* \* sleep ${RanSleep} && \1|" ${ListCron}
     crontab ${ListCron}
   fi
 }
+
+## 重置仓库remote url
+function Reset_RepoUrl {
+  if [[ ${JD_DIR} ]] && [[ ${ENABLE_RESET_REPO_URL} == true ]]; then
+    if [ -d ${ShellDir}/.git ]; then
+      cd ${ShellDir}
+      git remote set-url origin ${ShellURL}
+      git reset --hard
+    fi
+    if [ -d ${ScriptsDir}/.git ]; then
+      cd ${ScriptsDir}
+      git remote set-url origin ${ScriptsURL}
+      git reset --hard
+    fi
+  fi
+}
+
+## 更新shell
 function Git_PullShell {
-  echo -e "更新shell脚本，原地址：${ShellURL}\n"
+  echo -e "更新shell...\n"
   cd ${ShellDir}
   git fetch --all
   ExitStatusShell=$?
   git reset --hard origin/main
+  echo
+}
+
+## 更新shell成功后的操作
+function Git_PullShellNext {
+  if [[ ${ExitStatusShell} -eq 0 ]]; then
+    echo -e "更新shell成功...\n"
+    Update_Entrypoint
+    [[ "${PanelDependOld}" != "${PanelDependNew}" ]] && cd ${ShellDir}/panel && Npm_Install panel
+    cp -f ${FileConfSample} ${ConfigDir}/config.sh.sample
+    [ -d ${ScriptsDir}/node_modules ] && Notify_Version
+  else
+    echo -e "更新shell失败，请检查原因...\n"
+  fi
 }
 
 ## 克隆scripts
 function Git_CloneScripts {
+  echo -e "克隆scripts...\n"
   git clone -b ${ScriptsBranch} ${ScriptsURL} ${ScriptsDir}
   ExitStatusScripts=$?
   echo
@@ -64,12 +103,21 @@ function Git_CloneScripts {
 
 ## 更新scripts
 function Git_PullScripts {
+  echo -e "更新scripts...\n"
   cd ${ScriptsDir}
   #git fetch --all
   git pull
   ExitStatusScripts=$?
   git reset --hard origin/master
   echo
+}
+
+## 更新docker-entrypoint
+function Update_Entrypoint {
+  if [[ ${JD_DIR} ]] && [[ $(cat ${ShellDir}/docker/docker-entrypoint.sh) != $(cat /usr/local/bin/docker-entrypoint.sh) ]]; then
+    cp -f ${ShellDir}/docker/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+    chmod 777 /usr/local/bin/docker-entrypoint.sh
+  fi
 }
 
 ## 用户数量UserSum
@@ -83,34 +131,7 @@ function Count_UserSum {
   done
 }
 
-## 把config.sh中提供的所有账户的PIN附加在jd_joy_run.js中，让各账户相互进行宠汪汪赛跑助力
-function Change_JoyRunPins {
-  j=${UserSum}
-  PinALL=""
-  while [[ $j -ge 1 ]]
-  do
-    Tmp=Cookie$j
-    CookieTemp=${!Tmp}
-    PinTemp=$(echo ${CookieTemp} | perl -pe "{s|.*pt_pin=(.+);|\1|; s|%|\\\x|g}")
-    PinTempFormat=$(printf ${PinTemp})
-    PinALL="${PinTempFormat},${PinALL}"
-    let j--
-  done
-  perl -i -pe "{s|(let invite_pins = \[\")(.+\"\];?)|\1${PinALL}\2|; s|(let run_pins = \[\")(.+\"\];?)|\1${PinALL}\2|}" ${ScriptsDir}/jd_joy_run.js
-}
-
-## 修改lxk0301大佬js文件的函数汇总
-function Change_ALL {
-  if [ -f ${FileConf} ]; then
-    . ${FileConf}
-    if [ -n "${Cookie1}" ]; then
-      Count_UserSum
-      Change_JoyRunPins
-    fi
-  fi
-}
-
-## 检测文件：LXK9301/jd_scripts 仓库中的 docker/crontab_list.sh，和 shylocks/Loon 仓库中的 docker/crontab_list.sh
+## 检测文件：LXK9301/jd_scripts 仓库中的 docker/crontab_list.sh
 ## 检测定时任务是否有变化，此函数会在Log文件夹下生成四个文件，分别为：
 ## task.list    crontab.list中的所有任务清单，仅保留脚本名
 ## js.list      上述检测文件中用来运行js脚本的清单（去掉后缀.js，非运行脚本的不会包括在内）
@@ -148,14 +169,18 @@ function Notify_NewTask {
 
 ## 检测配置文件版本
 function Notify_Version {
+  ## 识别出两个文件的版本号
+  VerConfSample=$(grep " Version: " ${FileConfSample} | perl -pe "s|.+v((\d+\.?){3})|\1|")
+  [ -f ${FileConf} ] && VerConf=$(grep " Version: " ${FileConf} | perl -pe "s|.+v((\d+\.?){3})|\1|")
+  
+  ## 删除旧的发送记录文件
   [ -f "${SendCount}" ] && [[ $(cat ${SendCount}) != ${VerConfSample} ]] && rm -f ${SendCount}
   UpdateDate=$(grep " Date: " ${FileConfSample} | awk -F ": " '{print $2}')
   UpdateContent=$(grep " Update Content: " ${FileConfSample} | awk -F ": " '{print $2}')
   if [ -f ${FileConf} ] && [[ "${VerConf}" != "${VerConfSample}" ]] && [[ ${UpdateDate} == $(date "+%Y-%m-%d") ]]
   then
     if [ ! -f ${SendCount} ]; then
-      echo -e "检测到配置文件config.sh.sample有更新\n\n更新日期: ${UpdateDate}\n当前版本: ${VerConf}\n新的版本: ${VerConfSample}\n更新内容: ${UpdateContent}\n如需使用新功能请对照config.sh.sample，将相关新参数手动增加到你自己的config.sh中，否则请无视本消息。\n" | tee ${ContentVersion}
-      echo -e "本消息只在该新版本配置文件更新当天发送一次。" >> ${ContentVersion}
+      echo -e "检测到配置文件config.sh.sample有更新\n\n更新日期: ${UpdateDate}\n当前版本: ${VerConf}\n新的版本: ${VerConfSample}\n更新内容: ${UpdateContent}\n更新说明: 如需使用新功能请对照config.sh.sample，将相关新参数手动增加到你自己的config.sh中，否则请无视本消息。本消息只在该新版本配置文件更新当天发送一次。" | tee ${ContentVersion}
       cd ${ShellDir}
       node update.js
       if [ $? -eq 0 ]; then
@@ -185,31 +210,27 @@ function Npm_InstallSub {
 
 ## npm install
 function Npm_Install {
-  cd ${ScriptsDir}
-  if [[ "${PackageListOld}" != "$(cat package.json)" ]]; then
-    echo -e "检测到package.json有变化，运行 npm install...\n"
-    Npm_InstallSub
-    if [ $? -ne 0 ]; then
-      echo -e "\nnpm install 运行不成功，自动删除 ${ScriptsDir}/node_modules 后再次尝试一遍..."
-      rm -rf ${ScriptsDir}/node_modules
-    fi
-    echo
+  echo -e "检测到 $1 的依赖包有变化，运行 npm install...\n"
+  Npm_InstallSub
+  if [ $? -ne 0 ]; then
+    echo -e "\nnpm install 运行不成功，自动删除 $1/node_modules 后再次尝试一遍..."
+    rm -rf node_modules
   fi
+  echo
 
-  if [ ! -d ${ScriptsDir}/node_modules ]; then
+  if [ ! -d node_modules ]; then
     echo -e "运行 npm install...\n"
     Npm_InstallSub
     if [ $? -ne 0 ]; then
-      echo -e "\nnpm install 运行不成功，自动删除 ${ScriptsDir}/node_modules...\n"
-      echo -e "请进入 ${ScriptsDir} 目录后按照wiki教程手动运行 npm install...\n"
-      echo -e "当 npm install 失败时，如果检测到有新任务或失效任务，只会输出日志，不会自动增加或删除定时任务...\n"
+      echo -e "\nnpm install 运行不成功，自动删除 $1/node_modules...\n"
+      echo -e "请进入 $1 目录后手动运行 npm install...\n"
       echo -e "3...\n"
       sleep 1
       echo -e "2...\n"
       sleep 1
       echo -e "1...\n"
       sleep 1
-      rm -rf ${ScriptsDir}/node_modules
+      rm -rf node_modules
     fi
   fi
 }
@@ -273,7 +294,7 @@ function Add_Cron {
       then
         echo "4 0,9 * * * bash ${ShellJd} ${Cron}" >> ${ListCron}
       else
-        cat ${ListCronLxk}| grep -E "\/${Cron}\." | perl -pe "s|(^.+)node */scripts/(j[drx]_\w+)\.js.+|\1bash ${ShellJd} \2|" >> ${ListCron}
+        cat ${ListCronLxk} | grep -E "\/${Cron}\." | perl -pe "s|(^.+)node */scripts/(j[drx]_\w+)\.js.+|\1bash ${ShellJd} \2|" >> ${ListCron}
       fi
     done
 
@@ -306,47 +327,35 @@ if [ "${TZ}" = "UTC" ]; then
   echo -n "北京时间："
   echo $(date -d "8 hour" "+%Y-%m-%d %H:%M:%S")
 fi
-echo -e "\nSHELL脚本目录：${ShellDir}\n"
-echo -e "JS脚本目录：${ScriptsDir}\n"
+echo -e "\nJS脚本目录：${ScriptsDir}\n"
 echo -e "--------------------------------------------------------------\n"
 
-## 更新shell脚本、检测配置文件版本并将sample/config.sh.sample复制到config目录下
-Git_PullShell && Update_Cron
-VerConfSample=$(grep " Version: " ${FileConfSample} | perl -pe "s|.+v((\d+\.?){3})|\1|")
-[ -f ${FileConf} ] && VerConf=$(grep " Version: " ${FileConf} | perl -pe "s|.+v((\d+\.?){3})|\1|")
-if [ ${ExitStatusShell} -eq 0 ]
-then
-  echo -e "\nshell脚本更新完成...\n"
-  if [ -n "${JD_DIR}" ] && [ -d ${ConfigDir} ]; then
-    cp -f ${FileConfSample} ${ConfigDir}/config.sh.sample
-  fi
-else
-  echo -e "\nshell脚本更新失败，请检查原因后再次运行git_pull.sh，或等待定时任务自动再次运行git_pull.sh...\n"
-fi
-## 更新crontab
-[[ $(date "+%-H") -le 2 ]] && Update_Cron
+## 导入配置，更新cron，设置url，更新shell，复制sample，复制entrypoint，发送新配置通知
+Import_Conf
+Update_Cron
+Reset_RepoUrl
+[ -f ${ShellDir}/panel/package.json ] && PanelDependOld=$(cat ${ShellDir}/panel/package.json)
+Git_PullShell
+[ -f ${ShellDir}/panel/package.json ] && PanelDependNew=$(cat ${ShellDir}/panel/package.json)
+Git_PullShellNext
+
 ## 克隆或更新js脚本
-if [ ${ExitStatusShell} -eq 0 ]; then
-  echo -e "--------------------------------------------------------------\n"
-  [ -f ${ScriptsDir}/package.json ] && PackageListOld=$(cat ${ScriptsDir}/package.json)
-  [ -d ${ScriptsDir}/.git ] && Git_PullScripts || Git_CloneScripts
-fi
+[ -f ${ScriptsDir}/package.json ] && ScriptsDependOld=$(cat ${ScriptsDir}/package.json)
+[ -d ${ScriptsDir}/.git ] && Git_PullScripts || Git_CloneScripts
+[ -f ${ScriptsDir}/package.json ] && ScriptsDependNew=$(cat ${ScriptsDir}/package.json)
 
 ## 执行各函数
 if [[ ${ExitStatusScripts} -eq 0 ]]
 then
-  echo -e "js脚本更新完成...\n"
-  Change_ALL
-  [ -d ${ScriptsDir}/node_modules ] && Notify_Version
+  echo -e "更新scripts成功...\n"
   Diff_Cron
-  Npm_Install
+  [[ "${ScriptsDependOld}" != "${ScriptsDependNew}" ]] && cd ${ScriptsDir} && Npm_Install scripts
   Output_ListJsAdd
   Output_ListJsDrop
   Del_Cron
   Add_Cron
 else
-  echo -e "js脚本更新失败，请检查原因或再次运行git_pull.sh...\n"
-  Change_ALL
+  echo -e "更新scripts失败，请检查原因...\n"
 fi
 
 ## 调用用户自定义的diy.sh
