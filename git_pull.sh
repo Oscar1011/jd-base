@@ -24,6 +24,7 @@ isTermux=${ANDROID_RUNTIME_ROOT}${ANDROID_ROOT}
 ScriptsURL=git@gitee.com:lxk0301/jd_scripts.git
 ScriptsBranch=master
 ShellURL=https://github.com/Oscar1011/jd-base.git
+ShellBranch=main
 ExitStatusScripts=0
 
 ## 导入配置文件
@@ -76,7 +77,7 @@ function Git_PullShell {
   cd ${ShellDir}
   git fetch --all
   ExitStatusShell=$?
-  git reset --hard origin/main
+  git reset --hard origin/${ShellBranch}
   echo
 }
 
