@@ -75,7 +75,8 @@ function Reset_RepoUrl {
 function Git_PullShell {
   echo -e "更新shell...\n"
   cd ${ShellDir}
-  git fetch --all
+  #git fetch --all
+  git pull
   ExitStatusShell=$?
   git reset --hard origin/${ShellBranch}
   echo
