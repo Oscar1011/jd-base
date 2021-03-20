@@ -14,7 +14,7 @@ if [ ! -d ${diyscripts} ]; then
 fi
 
 cd ${diyscripts}
-git fetch --all
+git pull
 gitpullstatus=$?
 git reset --hard origin/${git_branch}
 
