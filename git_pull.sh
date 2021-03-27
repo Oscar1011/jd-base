@@ -23,7 +23,7 @@ SendCount=${ShellDir}/send_count
 isTermux=${ANDROID_RUNTIME_ROOT}${ANDROID_ROOT}
 ScriptsURL=https://github.com.cnpmjs.org/RikudouPatrickstar/jd_scripts
 ScriptsBranch=master
-ShellURL=https://github.com/Oscar1011/jd-base.git
+ShellURL=https://github.com.cnpmjs.org/Oscar1011/jd-base
 ShellBranch=test
 ExitStatusScripts=0
 
