@@ -343,7 +343,7 @@ Git_PullShellNext
 
 ## 克隆或更新js脚本
 [ -f ${ScriptsDir}/package.json ] && ScriptsDependOld=$(cat ${ScriptsDir}/package.json)
-[ -d ${ScriptsDir}/.git ] && Git_PullScripts || Git_CloneScripts
+#[ -d ${ScriptsDir}/.git ] && Git_PullScripts || Git_CloneScripts
 [ -f ${ScriptsDir}/package.json ] && ScriptsDependNew=$(cat ${ScriptsDir}/package.json)
 
 ## 执行各函数
