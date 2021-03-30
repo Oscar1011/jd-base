@@ -21,7 +21,8 @@ ContentNewTask=${ShellDir}/new_task
 ContentDropTask=${ShellDir}/drop_task
 SendCount=${ShellDir}/send_count
 isTermux=${ANDROID_RUNTIME_ROOT}${ANDROID_ROOT}
-ScriptsURL=https://github.com.cnpmjs.org/RikudouPatrickstar/jd_scripts
+https://github.com/gossh520/jd_scripts
+ScriptsURL=https://github.com.cnpmjs.org/gossh520/jd_scripts
 ScriptsBranch=master
 ShellURL=https://github.com.cnpmjs.org/Oscar1011/jd-base
 ShellBranch=test
