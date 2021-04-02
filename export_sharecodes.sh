@@ -81,16 +81,17 @@ function Cat_Scodes {
     done
 
     if [[ ${codes} ]]; then
-      ## 导出为他人助力变量
+      echo 导出为他人助力变量
       help_code=""
       for ((user_num=1;user_num<=${UserSum};user_num++));do
         echo -e "${codes}" | grep -${Opt}q "My$2${user_num}=''"
         if [ $? -eq 1 ]; then
           help_code=${help_code}"\${My"$2${user_num}"}@"
+	  echo $help_code
         fi
       done
 
-      ## 生成互助规则模板
+      echo 生成互助规则模板
       for_other_codes=""
       case $HelpType in
         0) ### 统一优先级助力模板
