@@ -65,10 +65,12 @@ function Cat_Scodes {
       case $# in
         2)
           codes=$(cat ${log} | grep -${Opt} "开始【京东账号|您的(好友)?助力码为" | uniq | perl -0777 -pe "{s|\*||g; s|开始||g; s|\n您的(好友)?助力码为(：)?:?|：|g; s|，.+||g}" | sed -r "s/【京东账号/My$2/;s/】.*?：/='/;s/】.*?/='/;s/$/'/;s/\(每次运行都变化,不影响\)//")
+	  echo "导出1  $codes"
           ;;
         3)
           codes=$(grep -${Opt} $3 ${log} | uniq | sed -r "s/【京东账号/My$2/;s/（.*?】/='/;s/$/'/")
           ## 添加判断，若未找到该用户互助码，则设置为空值
+	  echo "导出2  $codes"
           for ((user_num=1;user_num<=${UserSum};user_num++));do
             echo -e "${codes}" | grep -${Opt}q "My$2${user_num}"
             if [ $? -eq 1 ];then
@@ -77,6 +79,7 @@ function Cat_Scodes {
           done
           ;;
       esac
+      
       [[ ${codes} ]] && break
     done
 
