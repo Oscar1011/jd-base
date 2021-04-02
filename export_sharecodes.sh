@@ -82,8 +82,8 @@ function Cat_Scodes {
             if [ $? -eq 1 ];then
               echo "${codes}" >> ${FileConf}
 	    else
-	      echo "测试 ${array_codes[user_num-1]}"
-	      sed -r -i "s/^My$2${user_num}=.*?$/${array_codes[user_num-1]}/g"  ${ConfigDir}/configTest.sh
+	      #echo "测试 ${array_codes[user_num-1]}"
+	      sed -r -i "s/^My$2${user_num}=.*?$/${array_codes[user_num-1]}/g"  ${FileConf}
             fi
           done
           ;;
