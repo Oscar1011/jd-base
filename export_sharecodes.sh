@@ -12,7 +12,7 @@ Tips="从日志中未找到任何互助码"
 ## Name1、 Name2 和 Name3 中的三个名称必须一一对应。
 Name1=(fruit pet plantBean dreamFactory jdfactory crazy_joy jdzz jxnc bookshop cash sgmh cfd carnivalcity)
 Name2=(东东农场 东东萌宠 京东种豆得豆 京喜工厂 东东工厂 crazyJoy任务 京东赚赚 京喜农场 口袋书店 签到领现金 闪购盲盒 京喜财富岛 京东手机狂欢城)
-Name3=(Fruit Pet Bean DreamFactory JdFactory Joy Jdzz Jxnc BookShop Cash Sgmh Cfd City)
+Name3=(Fruit Pet Bean DreamFactory JdFactory Joy Jdzz Jxnc BookShop Cash Sgmh Cfd JD818)
 
 ## 导入 config.sh
 function Import_Conf {
