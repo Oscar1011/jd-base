@@ -82,7 +82,7 @@ function Cat_Scodes {
             if [ $? -eq 1 ];then
               echo "${codes}" >> ${FileConf}
 	    else
-	      echo "测试 ${codes[user_num]}"
+	      echo "测试 ${array_codes[user_num]}"
 	      #sed -r "s/^My$2${user_num}=.*?$/"
             fi
           done
