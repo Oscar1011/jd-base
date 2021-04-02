@@ -139,7 +139,12 @@ function Cat_Scodes {
           done
           ;;
       esac
-
+      for ((user_num=1;user_num<=${UserSum};user_num++));do
+          cat ${FileConf} | grep -${Opt}q "ForOther$2${user_num}"
+          if [ $? -eq 1 ];then
+              echo "${codes}" >> ${FileConf}
+          fi
+      done
       echo -e "${codes}\n\n${for_other_codes}" | sed s/[[:space:]]//g
     else
       echo ${Tips}
