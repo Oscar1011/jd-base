@@ -70,11 +70,17 @@ function Cat_Scodes {
         3)
           codes=$(grep -${Opt} $3 ${log} | uniq | sed -r "s/【京东账号/My$2/;s/（.*?】/='/;s/$/'/")
           ## 添加判断，若未找到该用户互助码，则设置为空值
-	  echo "导出2  $codes"
           for ((user_num=1;user_num<=${UserSum};user_num++));do
             echo -e "${codes}" | grep -${Opt}q "My$2${user_num}"
             if [ $? -eq 1 ];then
               codes=$(echo "${codes}" | sed -r "/My$2$(expr ${user_num} - 1)=/a\My$2${user_num}=''") 
+            fi
+          done
+	  
+	  for ((user_num=1;user_num<=${UserSum};user_num++));do
+            cat ${FileConf} | grep -${Opt}q "My$2${user_num}"
+            if [ $? -eq 1 ];then
+              echo "${codes}" >> ${FileConf}
             fi
           done
           ;;
@@ -84,17 +90,17 @@ function Cat_Scodes {
     done
 
     if [[ ${codes} ]]; then
-      echo 导出为他人助力变量
+      
       help_code=""
       for ((user_num=1;user_num<=${UserSum};user_num++));do
         echo -e "${codes}" | grep -${Opt}q "My$2${user_num}=''"
         if [ $? -eq 1 ]; then
           help_code=${help_code}"\${My"$2${user_num}"}@"
-	  echo $help_code
+	  
         fi
       done
 
-      echo 生成互助规则模板
+      
       for_other_codes=""
       case $HelpType in
         0) ### 统一优先级助力模板
@@ -125,7 +131,7 @@ function Cat_Scodes {
         *) ### 普通优先级助力模板
           for ((user_num=1;user_num<=${UserSum};user_num++));do
             new_code=$(echo ${help_code} | sed "s/\${My"$2${user_num}"}@//;s/@$//")
-	    echo "$new_code   ${codes}   ${for_other_codes}   ${user_num}"
+	   
             for_other_codes=${for_other_codes}"ForOther"$2${user_num}"=\""${new_code}"\"\n"
           done
           ;;
