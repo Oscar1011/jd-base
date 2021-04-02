@@ -14,6 +14,24 @@ Name1=(fruit pet plantBean dreamFactory jdfactory crazy_joy jdzz jxnc bookshop c
 Name2=(东东农场 东东萌宠 京东种豆得豆 京喜工厂 东东工厂 crazyJoy任务 京东赚赚 京喜农场 口袋书店 签到领现金 闪购盲盒 京喜财富岛 京东手机狂欢城)
 Name3=(Fruit Pet Bean DreamFactory JdFactory Joy Jdzz Jxnc BookShop Cash Sgmh Cfd JD818)
 
+function replace_2_file()
+{
+	_file=${1}
+	_key=${2}
+	_value=${3}
+	
+	line_number=`sed -n '/'"${_key}"'/=' ${_file}`
+	if [ "${line_number}" == "" ]; then
+		echo "not find ${_key}"
+	else
+		if [ "${_value}" == " \\\\" ]; then
+			echo -e  "${_key} is empty ~~~!!!"
+		fi
+      echo -e "${_key}${_value}"
+		  sed -i -e ${line_number}s"/.*/${_key}${_value}/" ${_file}
+	fi
+}
+
 ## 导入 config.sh
 function Import_Conf {
   if [ -f ${FileConf} ]
