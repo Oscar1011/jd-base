@@ -122,7 +122,7 @@ function Cat_Scodes {
         *) ### 普通优先级助力模板
           for ((user_num=1;user_num<=${UserSum};user_num++));do
             new_code=$(echo ${help_code} | sed "s/\${My"$2${user_num}"}@//;s/@$//")
-	    echo "$new_code   ${user_num}"
+	    echo "$new_code   ${codes}   ${for_other_codes}   ${user_num}"
             for_other_codes=${for_other_codes}"ForOther"$2${user_num}"=\""${new_code}"\"\n"
           done
           ;;
