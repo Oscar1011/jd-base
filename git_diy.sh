@@ -81,8 +81,11 @@ function addnewcron {
         [ -n "${change}" ] && \cp $js /jd/scripts/${author}_$base && echo -e "${author}_$base 脚本更新了."
       fi
   done
-  [ "$addname" != "" ] && notify "新增 ${author} 自定义脚本" "${addname}"
-
+  #[ "$addname" != "" ] && notify "新增 ${author} 自定义脚本" "${addname}"
+  if [ "$addname" != "" ]; then
+      echo -e "新增 ${author} 自定义脚本 ${addname}" > ${ContentNewTask}
+      Notify_NewTask
+  fi
 }
 
 function delcron {
@@ -95,7 +98,11 @@ function delcron {
 	      delname="${delname}\n${author}_${filename}"
       fi
   done
-  [ "$delname" != "" ] && notify  "删除 ${author} 失效脚本" "${delname}" 
+  #[ "$delname" != "" ] && notify  "删除 ${author} 失效脚本" "${delname}" 
+  if [ "$delname" != "" ]; then
+      echo -e "删除 ${author} 失效脚本 ${delname}" > ${ContentDropTask}
+      Notify_DropTask
+  fi
 }
 
 if [[ ${gitpullstatus} -eq 0 ]]
