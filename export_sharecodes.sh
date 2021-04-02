@@ -76,11 +76,14 @@ function Cat_Scodes {
               codes=$(echo "${codes}" | sed -r "/My$2$(expr ${user_num} - 1)=/a\My$2${user_num}=''") 
             fi
           done
-	  
+	  array_codes=(${codes})
 	  for ((user_num=1;user_num<=${UserSum};user_num++));do
             cat ${FileConf} | grep -${Opt}q "My$2${user_num}"
             if [ $? -eq 1 ];then
               echo "${codes}" >> ${FileConf}
+	    else
+	      echo "测试 ${codes[user_num]}"
+	      #sed -r "s/^My$2${user_num}=.*?$/"
             fi
           done
           ;;
