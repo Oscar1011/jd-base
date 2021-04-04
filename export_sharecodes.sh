@@ -92,7 +92,9 @@ function Cat_Scodes {
 	        forsub_codes=${forsub_codes}"&${forsub_code}"
             fi
           done
-	  echo ${forsub_codes}
+	  echo -e "\n"
+	  echo $(echo ${forsub_codes} | sed "s/^&//")
+	  echo -e "\n"
           ;;
       esac
       
