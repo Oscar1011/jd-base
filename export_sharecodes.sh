@@ -86,7 +86,7 @@ function Cat_Scodes {
 	      #echo "测试 ${array_codes[user_num-1]}"
 	      sed -r -i "s/^My$2${user_num}=.*?$/${array_codes[user_num-1]}/g"  ${FileConf}
             fi
-	    forsub_code=$(echo ${array_codes[user_num-1]} | sed "s/\${My"$2${user_num}"}=\'//;s/\'$//")
+	    forsub_code=$(echo ${array_codes[user_num-1]} | sed "s/My"$2${user_num}"=\'//;s/\'$//")
 	    if [ "$forsub_code" != "" ];then
 	        echo "测试 $forsub_code"
 	        forsub_codes=${forsub_codes}"&${forsub_code}"
