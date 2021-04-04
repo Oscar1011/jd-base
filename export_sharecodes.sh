@@ -88,11 +88,11 @@ function Cat_Scodes {
             fi
 	    forsub_code=$(echo ${array_codes[user_num-1]} | sed "s/My"$2${user_num}"=\'//;s/\'$//")
 	    if [ "$forsub_code" != "" ];then
-	        echo "测试 $forsub_code"
+	        #echo "测试 $forsub_code"
 	        forsub_codes=${forsub_codes}"&${forsub_code}"
             fi
           done
-	  echo -e "提交码:\n"
+	  echo -e "\n提交码:"
 	  echo $(echo ${forsub_codes} | sed "s/^&//")
 	  echo -e "\n"
           ;;
