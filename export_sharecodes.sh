@@ -92,7 +92,7 @@ function Cat_Scodes {
 	        forsub_codes=${forsub_codes}"&${forsub_code}"
             fi
           done
-	  echo -e "\n"
+	  echo -e "提交码:\n"
 	  echo $(echo ${forsub_codes} | sed "s/^&//")
 	  echo -e "\n"
           ;;
