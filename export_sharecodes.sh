@@ -77,6 +77,7 @@ function Cat_Scodes {
             fi
           done
 	  array_codes=(${codes})
+	  forsub_codes=''
 	  for ((user_num=1;user_num<=${UserSum};user_num++));do
             cat ${FileConf} | grep -${Opt}q "My$2${user_num}"
             if [ $? -eq 1 ];then
@@ -85,7 +86,13 @@ function Cat_Scodes {
 	      #echo "测试 ${array_codes[user_num-1]}"
 	      sed -r -i "s/^My$2${user_num}=.*?$/${array_codes[user_num-1]}/g"  ${FileConf}
             fi
+	    forsub_code=$(echo ${array_codes[user_num-1]} | sed "s/\${My"$2${user_num}"}=\'//;s/\'$//")
+	    if [ "$forsub_code" != "" ];then
+	        echo "测试 $forsub_code"
+	        forsub_codes=${forsub_codes}&${forsub_code}
+            fi
           done
+	  echo ${forsub_codes}
           ;;
       esac
       
@@ -136,6 +143,7 @@ function Cat_Scodes {
             new_code=$(echo ${help_code} | sed "s/\${My"$2${user_num}"}@//;s/@$//")
 	   
             for_other_codes=${for_other_codes}"ForOther"$2${user_num}"=\""${new_code}"\"\n"
+	    
           done
           ;;
       esac
