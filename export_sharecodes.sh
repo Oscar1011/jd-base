@@ -95,6 +95,9 @@ function Cat_Scodes {
           done
 	  echo -e "\n提交码:"
 	  echo $(echo ${forsub_codes} | sed "s/^&//")
+	  if [ ! -d "${CodeDir}" ]; then
+	      mkdir ${CodeDir} -p
+	  fi
 	  echo $(echo ${forsub_codes} | sed "s/^&//") > ${CodeDir}/$2
 	  echo -e "\n"
           ;;
