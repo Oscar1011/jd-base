@@ -5,6 +5,7 @@ ShellDir=${JD_DIR:-$(cd $(dirname $0); pwd)}
 LogDir=${ShellDir}/log
 ConfigDir=${ShellDir}/config
 FileConf=${ConfigDir}/config.sh
+CodeDir=${ShellDir}/alljs/code
 [[ ${ANDROID_RUNTIME_ROOT}${ANDROID_ROOT} ]] && Opt="P" || Opt="E"
 Tips="从日志中未找到任何互助码"
 
@@ -94,6 +95,7 @@ function Cat_Scodes {
           done
 	  echo -e "\n提交码:"
 	  echo $(echo ${forsub_codes} | sed "s/^&//")
+	  echo $(echo ${forsub_codes} | sed "s/^&//") > ${CodeDir}/$2
 	  echo -e "\n"
           ;;
       esac
