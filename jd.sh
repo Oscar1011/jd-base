@@ -89,7 +89,6 @@ function Combin_All {
   export JDJOY_SHARECODES=$(Combin_Sub ForOtherJoy)
   export JXNC_SHARECODES=$(Combin_Sub ForOtherJxnc)
   export JXNCTOKENS=$(Combin_Sub TokenJxnc)
-  export BOOKSHOP_SHARECODES=$(Combin_Sub ForOtherBookShop)
   export JD_CASH_SHARECODES=$(Combin_Sub ForOtherCash)
   export JDSGMH_SHARECODES=$(Combin_Sub ForOtherSgmh)
   export JDCFD_SHARECODES=$(Combin_Sub ForOtherCfd)
