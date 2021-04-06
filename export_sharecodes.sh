@@ -66,7 +66,6 @@ function Cat_Scodes {
       case $# in
         2)
           codes=$(cat ${log} | grep -${Opt} "开始【京东账号|您的(好友)?助力码为" | uniq | perl -0777 -pe "{s|\*||g; s|开始||g; s|\n您的(好友)?助力码为(：)?:?|：|g; s|，.+||g}" | sed -r "s/【京东账号/My$2/;s/】.*?：/='/;s/】.*?/='/;s/$/'/;s/\(每次运行都变化,不影响\)//")
-	  echo "导出1  $codes"
           ;;
         3)
           codes=$(grep -${Opt} $3 ${log} | uniq | sed -r "s/【京东账号/My$2/;s/（.*?】/='/;s/$/'/")
@@ -77,31 +76,29 @@ function Cat_Scodes {
               codes=$(echo "${codes}" | sed -r "/My$2$(expr ${user_num} - 1)=/a\My$2${user_num}=''") 
             fi
           done
-	  array_codes=(${codes})
-	  forsub_codes=''
-	  for ((user_num=1;user_num<=${UserSum};user_num++));do
-
-	    forsub_code=$(echo ${array_codes[user_num-1]} | sed "s/My"$2${user_num}"=\'//;s/\'$//")
-	    if [ "$forsub_code" != "" ];then
-	        cat ${FileConf} | grep -${Opt}q "My$2${user_num}="
-            	if [ $? -eq 1 ];then
-              		echo -e "${codes}" >> ${FileConf}
-	    	else
-	      		#echo "测试 ${array_codes[user_num-1]}"
-	      		sed -r -i "s/^My$2${user_num}=.*?$/${array_codes[user_num-1]}/g"  ${FileConf}
-            	fi
-	    
-	        #echo "测试 $forsub_code"
-	        forsub_codes=${forsub_codes}"&${forsub_code}"
+          array_codes=(${codes})
+	        forsub_codes=''
+	        for ((user_num=1;user_num<=${UserSum};user_num++));do
+	          forsub_code=$(echo ${array_codes[user_num-1]} | sed "s/My"$2${user_num}"=\'//;s/\'$//")
+	          if [ "$forsub_code" != "" ];then
+	            cat ${FileConf} | grep -${Opt}q "My$2${user_num}="
+              if [ $? -eq 1 ];then
+                echo -e "${codes}" >> ${FileConf}
+  	          else
+	        	    #echo "测试 ${array_codes[user_num-1]}"
+	        	    sed -r -i "s/^My$2${user_num}=.*?$/${array_codes[user_num-1]}/g"  ${FileConf}
+              fi
+	            #echo "测试 $forsub_code"
+	            forsub_codes=${forsub_codes}"&${forsub_code}"
             fi
           done
-	  echo -e "\n提交码:"
-	  echo $(echo ${forsub_codes} | sed "s/^&//")
-	  if [ ! -d "${CodeDir}" ]; then
-	      mkdir ${CodeDir} -p
-	  fi
-	  echo $(echo ${forsub_codes} | sed "s/^&//") > ${CodeDir}/$2
-	  echo -e "\n"
+	        echo -e "\n提交码:"
+	        echo $(echo ${forsub_codes} | sed "s/^&//")
+	        if [ ! -d "${CodeDir}" ]; then
+	          mkdir ${CodeDir} -p
+	        fi
+	        echo $(echo ${forsub_codes} | sed "s/^&//") > ${CodeDir}/$2
+	        echo -e "\n"
           ;;
       esac
       
