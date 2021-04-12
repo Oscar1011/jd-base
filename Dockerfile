@@ -37,7 +37,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
     && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo "Asia/Shanghai" > /etc/timezone \
     && mkdir -p /root/.ssh \
-    && cp /etc/mykey > /root/.ssh/id_rsa \
+    && cp /etc/mykey /root/.ssh/id_rsa \
     && chmod 600 /root/.ssh/id_rsa \
     && ssh-keyscan gitee.com > /root/.ssh/known_hosts \
     && git clone -b ${JD_BASE_BRANCH} ${JD_BASE_URL} ${JD_DIR} \
