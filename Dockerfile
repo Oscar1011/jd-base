@@ -1,6 +1,6 @@
 FROM node:lts-alpine
 LABEL maintainer="Evine Deng <evinedeng@foxmail.com>"
-ARG JD_BASE_URL=https://github.com/Oscar1011/jd-base.git
+ARG JD_BASE_URL=git@gitee.com:Oscar1011/jd-base.git
 ARG JD_BASE_BRANCH=test
 ARG JD_SCRIPTS_URL=git@gitee.com:lxk0301/jd_scripts.git
 ARG JD_SCRIPTS_BRANCH=master
@@ -16,6 +16,8 @@ ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     ENABLE_WEB_PANEL=true \
     JD_SCRIPTS_URL=git@gitee.com:lxk0301/jd_scripts.git \
     JD_SCRIPTS_BRANCH=master
+
+COPY key /etc/mykey
 
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
     && apk update -f \
@@ -38,6 +40,8 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
     && echo -e $KEY > /root/.ssh/id_rsa \
     && chmod 600 /root/.ssh/id_rsa \
     && ssh-keyscan gitee.com > /root/.ssh/known_hosts \
+    && eval `ssh-agent`
+    && ssh-add /etc/mykey
     && git clone -b ${JD_BASE_BRANCH} ${JD_BASE_URL} ${JD_DIR} \
     && cd ${JD_DIR}/panel \
     && npm install \
