@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 eval `ssh-agent`
+chmod 600 /etc/mykey
 ssh-add /etc/mykey
 if [ ! -d ${JD_DIR}/config ]; then
   echo -e "没有映射config配置目录给本容器，请先按教程映射config配置目录...\n"
