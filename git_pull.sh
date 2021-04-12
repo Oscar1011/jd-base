@@ -23,7 +23,7 @@ SendCount=${ShellDir}/send_count
 isTermux=${ANDROID_RUNTIME_ROOT}${ANDROID_ROOT}
 ScriptsURL=git@gitee.com:lxk0301/jd_scripts.git
 ScriptsBranch=master
-ShellURL=https://ghproxy.com/https://github.com/Oscar1011/jd-base
+ShellURL=git@gitee.com:oscar1011/node.git
 ShellBranch=test
 ExitStatusScripts=0
 
