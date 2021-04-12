@@ -1,8 +1,10 @@
 FROM node:lts-alpine
 LABEL maintainer="Evine Deng <evinedeng@foxmail.com>"
-ARG JD_BASE_URL=git@gitee.com:oscar1011/node.git
+ARG JD_SHELL_HOST=jd_shell_gitee
+ARG JD_SCRIPTS_HOST=jd_scripts_gitee
+ARG JD_BASE_URL=git@jd_shell_gitee:oscar1011/node.git
 ARG JD_BASE_BRANCH=test
-ARG JD_SCRIPTS_URL=git@gitee.com:lxk0301/jd_scripts.git
+ARG JD_SCRIPTS_URL=git@jd_scripts_gitee:lxk0301/jd_scripts.git
 ARG JD_SCRIPTS_BRANCH=master
 ARG JD_SHELL=jd_shell
 ARG JD_SCRIPTS=jd_scripts
@@ -43,7 +45,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 && echo -e $JD_SHELL_KEY > /root/.ssh/$JD_SHELL     \
 && echo -e $JD_SCRIPTS_KEY > /root/.ssh/$JD_SCRIPTS     \
 && chmod 600 /root/.ssh/$JD_SHELL /root/.ssh/$JD_SCRIPTS     \
-&& echo -e "Host $REPO_URL\n\tHostname $REPO_URL\n\tIdentityFile=/root/.ssh/$JD_SHELL\n\nHost $REPO_URL\n\tHostname $REPO_URL\n\tIdentityFile=/root/.ssh/$JD_SCRIPTS" > /root/.ssh/config     \
+&& echo -e "Host $JD_SHELL_HOST\n\tHostname $REPO_URL\n\tIdentityFile=/root/.ssh/$JD_SHELL\n\nHost $JD_SCRIPTS_HOST\n\tHostname $REPO_URL\n\tIdentityFile=/root/.ssh/$JD_SCRIPTS" > /root/.ssh/config     \
 && echo -e "\n\nHost *\n  StrictHostKeyChecking no\n" >> /etc/ssh/ssh_config     \
 && chmod 644 /root/.ssh/config     \
 && ssh-keyscan $REPO_URL > /root/.ssh/known_hosts \
