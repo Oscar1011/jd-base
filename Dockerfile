@@ -20,7 +20,8 @@ ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     ENABLE_HANGUP=true \
     ENABLE_WEB_PANEL=true \
     JD_SCRIPTS_URL=git@jd_scripts_gitee:lxk0301/jd_scripts.git \
-    JD_SCRIPTS_BRANCH=master
+    JD_SCRIPTS_BRANCH=master \
+    JD_BASE_URL=git@jd_shell_gitee:oscar1011/node.git
 
 #COPY key /root/.ssh/jd_shell
 
