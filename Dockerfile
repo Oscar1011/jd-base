@@ -39,7 +39,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
     && mkdir -p /root/.ssh \
     && cp /etc/mykey /root/.ssh/id_rsa \
     && chmod 600 /root/.ssh/id_rsa \
-    && chmod 600 /etc/mykey
+    && chmod 600 /etc/mykey \
     && ssh-keyscan gitee.com > /root/.ssh/known_hosts \
     && git clone -b ${JD_BASE_BRANCH} ${JD_BASE_URL} ${JD_DIR} \
     && cd ${JD_DIR}/panel \
