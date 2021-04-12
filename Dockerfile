@@ -1,6 +1,6 @@
 FROM node:lts-alpine
 LABEL maintainer="Evine Deng <evinedeng@foxmail.com>"
-ARG JD_BASE_URL=git@gitee.com:Oscar1011/jd-base.git
+ARG JD_BASE_URL=git@gitee.com:oscar1011/node.git
 ARG JD_BASE_BRANCH=test
 ARG JD_SCRIPTS_URL=git@gitee.com:lxk0301/jd_scripts.git
 ARG JD_SCRIPTS_BRANCH=master
