@@ -39,7 +39,9 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
                              perl \
                              openssl \
                              openssh-client \
+                             python3 \
     && rm -rf /var/cache/apk/* \
+    && pip3 install requests \
     && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo "Asia/Shanghai" > /etc/timezone \
 && mkdir -p /root/.ssh     \
